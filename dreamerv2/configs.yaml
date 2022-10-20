@@ -1,0 +1,222 @@
+defaults:
+  use_gpu: True
+  # Split
+  split: False
+  color_jitter: True
+  resample_jitter: True
+  train_c1_jitter_range_low: [0.6]
+  train_c1_jitter_range_high: [1.4]
+
+  train_c0_jitter_range_low: [-0.5]
+  train_c0_jitter_range_high: [0.5]
+  
+  eval_c1_jitter_range_low: [0.1,1.4]
+  eval_c1_jitter_range_high: [0.6,1.9]
+  eval_c0_jitter_range_low: [-0.9,0.5]
+  eval_c0_jitter_range_high: [-0.5,0.9]
+  
+  
+  # Eval Easy
+  eval_ez_c1_jitter_range_low: [0.4,1.4]
+  eval_ez_c1_jitter_range_high: [0.6,1.6]
+  eval_ez_c0_jitter_range_low: [-0.7,0.5]
+  eval_ez_c0_jitter_range_high: [-0.5,0.7]
+  
+  
+  augmentation: 'scramble'
+  patch_size: 8
+  train_from_scratch: True
+
+  # Train Script
+  logdir: /dev/null
+  seed: 0
+  task: dmc_walker_walk
+  num_envs: 1
+  steps: 1e8
+  eval_every: 1e5
+  eval_eps: 20
+  action_repeat: 1
+  time_limit: 0
+  prefill: 10000
+  image_size: [64, 64]
+  replay_size: 2e6
+  dataset: {batch: 50, length: 50, oversample_ends: True}
+  precision: 16
+  grayscale: False
+  jit: True
+  
+  # Agent
+  log_every: 1e4
+  train_every: 5
+  train_steps: 1
+  pretrain: 0
+  clip_rewards: identity
+  expl_noise: 0.0
+  expl_behavior: greedy
+  expl_until: 0
+  eval_noise: 0.0
+  eval_state_mean: False
+
+  # World Model
+  pred_discount: True
+  use_main_prior: False
+  encode_whole: False
+  merge_kl: False
+  step_beta: False
+  beta_min: 1
+  beta_max: 5
+  final_beta_step: 2e7
+  grad_heads: [image, reward, discount]
+  rssm: {hidden: 400, deter: 400, stoch: 32, discrete: 32, act: elu, std_act: sigmoid2, min_std: 0.1}
+  split_rssm: {hidden: 400, deter: 400, stoch: 32, discrete: 32, act: elu, std_act: sigmoid2, min_std: 0.1, use_half_static_prior: False, h_from_zl: False}
+  aux_vae: {hidden: 400, stoch: 32, discrete: 32, act: elu, std_act: sigmoid2, min_std: 0.1}
+  encoder: {depth: 48, act: elu, kernels: [4, 4, 4, 4], keys: [image]}
+  encoder_hat: {depth: 48, act: elu, kernels: [4, 4, 4, 4], keys: [image]}
+  decoder: {depth: 48, act: elu, kernels: [5, 5, 6, 6]}
+  decoder_hat: {depth: 48, act: elu, kernels: [5, 5, 6, 6]}
+  reward_head: {layers: 4, units: 400, act: elu, dist: mse}
+  discount_head: {layers: 4, units: 400, act: elu, dist: binary}
+  zl_head: {layers: 4, units: 400, act: elu, dist: binary}
+  xhat_head: {layers: 3, units: 100, act: elu, dist: mse}
+  loss_scales: {kl: 1.0, reward: 1.0, discount: 1.0}
+  kl: {free: 0.0, forward: False, balance: 0.8, free_avg: True}
+  model_opt: {opt: adam, lr: 3e-4, eps: 1e-5, clip: 100, wd: 1e-6}
+
+  # Actor Critic
+  actor: {layers: 4, units: 400, act: elu, dist: trunc_normal, min_std: 0.1}
+  critic: {layers: 4, units: 400, act: elu, dist: mse}
+  actor_opt: {opt: adam, lr: 1e-4, eps: 1e-5, clip: 100, wd: 1e-6}
+  critic_opt: {opt: adam, lr: 1e-4, eps: 1e-5, clip: 100, wd: 1e-6}
+  discount: 0.99
+  discount_lambda: 0.95
+  imag_horizon: 15
+  actor_grad: both
+  actor_grad_mix: '0.1'
+  actor_ent: '1e-4'
+  slow_target: True
+  slow_target_update: 100
+  slow_target_fraction: 1
+
+  # Exploration
+  expl_extr_scale: 0.0
+  expl_intr_scale: 1.0
+  expl_opt: {opt: adam, lr: 3e-4, eps: 1e-5, clip: 100, wd: 1e-6}
+  expl_head: {layers: 4, units: 400, act: elu, dist: mse}
+  disag_target: stoch
+  disag_log: True
+  disag_models: 10
+  disag_offset: 1
+  disag_action_cond: True
+  expl_model_loss: kl
+
+full_range:
+  train_c1_jitter_range_low: [0.1]
+  train_c1_jitter_range_high: [1.9]
+  train_c0_jitter_range_low: [-0.9]
+  train_c0_jitter_range_high: [0.9]
+  
+
+swap_jitter_range:
+  eval_c1_jitter_range_low: [0.6]
+  eval_c1_jitter_range_high: [1.4]
+  eval_c0_jitter_range_low: [-0.5]
+  eval_c0_jitter_range_high: [0.5]
+  train_c1_jitter_range_low: [0.1,1.4]
+  train_c1_jitter_range_high: [0.6,1.9]
+  train_c0_jitter_range_low: [-0.9,0.5]
+  train_c0_jitter_range_high: [-0.5,0.9]
+  
+
+
+extra_only_hue:
+  eval_c1_jitter_range_low: [0.6]
+  eval_c1_jitter_range_high: [1.4]
+
+extra_only_hue_easy:
+  eval_c1_jitter_range_low: [0.6]
+  eval_c1_jitter_range_high: [1.4]
+  eval_c0_jitter_range_low: [-0.75,0.5]
+  eval_c0_jitter_range_high: [-0.5,0.75]
+
+smaller_range:
+  train_c1_jitter_range_low: [0.8]
+  train_c1_jitter_range_high: [1.2]
+  train_c0_jitter_range_low: [-0.25]
+  train_c0_jitter_range_high: [0.25]
+  eval_c1_jitter_range_low: [0.6,1.2]
+  eval_c1_jitter_range_high: [0.8,1.4]
+  eval_c0_jitter_range_low: [-0.5,0.25]
+  eval_c0_jitter_range_high: [-0.25,0.5]
+
+smaller_range_only_hue:
+  train_c1_jitter_range_low: [0.6]
+  train_c1_jitter_range_high: [1.4]
+  train_c0_jitter_range_low: [-0.25]
+  train_c0_jitter_range_high: [0.25]
+  eval_c1_jitter_range_low: [0.6]
+  eval_c1_jitter_range_high: [1.4]
+  eval_c0_jitter_range_low: [-0.5, 0.25]
+  eval_c0_jitter_range_high: [-0.25, 0.5]
+  
+
+
+
+atari:
+
+  task: atari_pong
+  time_limit: 108000  # 30 minutes of game play.
+  action_repeat: 4
+  steps: 2e7
+  eval_every: 1e6
+  log_every: 1e6
+  prefill: 200000
+  grayscale: False
+  train_every: 16
+  clip_rewards: tanh
+  rssm: {hidden: 600, deter: 600, stoch: 32, discrete: 32}
+  split_rssm: {hidden: 600, deter: 600, stoch: 32, discrete: 32}
+  actor.dist: onehot
+  model_opt.lr: 2e-4
+  actor_opt.lr: 4e-5
+  critic_opt.lr: 1e-4
+  actor_ent: 1e-3
+  discount: 0.999
+  actor_grad: reinforce
+  actor_grad_mix: 0
+  loss_scales.kl: 0.1
+  loss_scales.discount: 5.0
+  .*\.wd$: 1e-6
+
+dmc:
+
+  task: dmc_walker_walk
+  time_limit: 1000
+  action_repeat: 2
+  eval_every: 1e4
+  log_every: 1e4
+  prefill: 5000
+  train_every: 5
+  pretrain: 100
+  pred_discount: False
+  grad_heads: [image, reward]
+  rssm: {hidden: 200, deter: 200}
+  model_opt.lr: 3e-4
+  actor_opt.lr: 8e-5
+  critic_opt.lr: 8e-5
+  actor_ent: 1e-4
+  discount: 0.99
+  actor_grad: dynamics
+  kl.free: 1.0
+  dataset.oversample_ends: False
+
+debug:
+  use_gpu: True
+  jit: False
+  time_limit: 100
+  eval_every: 300
+  log_every: 300
+  prefill: 100
+  pretrain: 1
+  train_steps: 1
+  dataset.batch: 10
+  dataset.length: 10
